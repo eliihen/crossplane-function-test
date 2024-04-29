@@ -32,11 +32,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		return rsp, nil
 	}
 
-	name, err := xr.Resource.GetString("metadata.name")
-	if err != nil {
-		response.Fatal(rsp, errors.Wrapf(err, "cannot read metadata.name field of %s", xr.Resource.GetKind()))
-		return rsp, nil
-	}
+	name := xr.Resource.GetName()
 
 	image, err := xr.Resource.GetString("spec.image")
 	if err != nil {
@@ -60,7 +56,8 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 
 	deployment := &v1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name:      name,
+			Namespace: xr.Resource.GetNamespace(),
 		},
 		Spec: v1.DeploymentSpec{
 			Replicas: int32Ptr(2),
