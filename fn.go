@@ -97,7 +97,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		return rsp, nil
 	}
 
-	desired["deployment"] = &resource.DesiredComposed{Resource: composedDeploy}
+	desired[resource.Name("deployment")] = &resource.DesiredComposed{Resource: composedDeploy}
 
 	if err := response.SetDesiredComposedResources(rsp, desired); err != nil {
 		response.Fatal(rsp, errors.Wrapf(err, "cannot set desired composed resources in %T", rsp))
