@@ -69,9 +69,6 @@ jobs:
           - amd64
           - arm64
   
-    outputs:
-      new_tag: ${{ steps.build-and-push.outputs.digest }}
-
     steps:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
