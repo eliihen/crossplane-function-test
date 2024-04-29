@@ -64,6 +64,10 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
+      matrix:
+        arch:
+          - amd64
+          - arm64
   
     outputs:
       new_tag: ${{ steps.build-and-push.outputs.digest }}
