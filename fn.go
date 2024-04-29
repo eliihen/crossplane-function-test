@@ -32,6 +32,12 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		return rsp, nil
 	}
 
+	log := f.log.WithValues(
+		"xr-version", xr.Resource.GetAPIVersion(),
+		"xr-kind", xr.Resource.GetKind(),
+		"xr-name", xr.Resource.GetName(),
+	)
+
 	name := xr.Resource.GetName()
 
 	image, err := xr.Resource.GetString("spec.image")
@@ -53,6 +59,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	}
 
 	_ = v1.AddToScheme(composed.Scheme)
+	_ = corev1.AddToScheme(composed.Scheme)
 
 	deployment := &v1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -96,6 +103,8 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		response.Fatal(rsp, errors.Wrapf(err, "cannot set desired composed resources in %T", rsp))
 		return rsp, nil
 	}
+
+	log.Info("Added deploy", "name", name, "container", image+":"+tag)
 
 	return rsp, nil
 }
